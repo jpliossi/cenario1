@@ -23,10 +23,14 @@
     h1 {
       text-align: center;
     }
-    input[type="text"] {
-      width: 80%;
+    .input-group {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    input[type="text"], input[type="date"] {
+      flex: 1;
       padding: 0.5rem;
-      margin-right: 0.5rem;
     }
     button {
       padding: 0.5rem;
@@ -43,42 +47,78 @@
       padding: 0.5rem;
       background: #f0f0f0;
       border-radius: 5px;
+      flex-wrap: wrap;
     }
     li.done {
       text-decoration: line-through;
       color: #aaa;
+    }
+    .task-text {
+      flex: 1;
+      margin-right: 0.5rem;
+    }
+    .due-date {
+      font-size: 0.85rem;
+      color: #555;
+      margin-top: 0.25rem;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>To-Do List</h1>
-    <div>
+    <div class="input-group">
       <input id="new-task" type="text" placeholder="Nova tarefa..." />
+      <input id="task-date" type="date" />
       <button onclick="addTask()">Adicionar</button>
     </div>
     <ul id="task-list"></ul>
   </div>
 
   <script>
+    function formatDate(dateStr) {
+      const [year, month, day] = dateStr.split("-");
+      return `${day}/${month}/${year.slice(2)}`;
+    }
+
     function addTask() {
       const input = document.getElementById("new-task");
+      const dateInput = document.getElementById("task-date");
       const taskText = input.value.trim();
+      const dueDate = dateInput.value;
+
       if (!taskText) return;
 
       const li = document.createElement("li");
-      li.textContent = taskText;
+
+      const taskContent = document.createElement("div");
+      taskContent.classList.add("task-text");
+      taskContent.textContent = taskText;
+
+      if (dueDate) {
+        const dateSpan = document.createElement("div");
+        dateSpan.classList.add("due-date");
+        dateSpan.textContent = `Prazo: ${formatDate(dueDate)}`;
+        taskContent.appendChild(dateSpan);
+      }
+
+      li.appendChild(taskContent);
+
       li.addEventListener("click", () => {
         li.classList.toggle("done");
       });
 
       const delButton = document.createElement("button");
       delButton.textContent = "Remover";
-      delButton.onclick = () => li.remove();
+      delButton.onclick = (e) => {
+        e.stopPropagation(); // Evita marcar como "done" ao remover
+        li.remove();
+      };
       li.appendChild(delButton);
 
       document.getElementById("task-list").appendChild(li);
       input.value = "";
+      dateInput.value = "";
     }
   </script>
 </body>
