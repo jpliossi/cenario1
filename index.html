@@ -81,6 +81,11 @@
       return `${day}/${month}/${year.slice(2)}`;
     }
 
+    function reverseFormatDate(formatted) {
+      const [day, month, year] = formatted.split("/");
+      return `20${year}-${month}-${day}`;
+    }
+
     function addTask() {
       const input = document.getElementById("new-task");
       const dateInput = document.getElementById("task-date");
@@ -93,7 +98,10 @@
 
       const taskContent = document.createElement("div");
       taskContent.classList.add("task-text");
-      taskContent.textContent = taskText;
+
+      const nameSpan = document.createElement("div");
+      nameSpan.textContent = taskText;
+      taskContent.appendChild(nameSpan);
 
       if (dueDate) {
         const dateSpan = document.createElement("div");
@@ -104,16 +112,72 @@
 
       li.appendChild(taskContent);
 
-      li.addEventListener("click", () => {
-        li.classList.toggle("done");
-      });
+      li.addEventListener("click", (e) => {
+  
+  if (e.target.tagName !== "BUTTON" && e.target.tagName !== "INPUT") {
+    li.classList.toggle("done");
+  }
+});
+
+
+      const editButton = document.createElement("button");
+      editButton.textContent = "Editar";
+      editButton.onclick = (e) => {
+        e.stopPropagation();
+
+        const isEditing = li.querySelector("input.edit-name");
+
+        if (!isEditing) {
+          const currentText = taskContent.querySelector("div")?.textContent || "";
+          const currentDateElem = taskContent.querySelector(".due-date");
+          const currentDate = currentDateElem ? currentDateElem.textContent.split(": ")[1] : "";
+
+          const nameInput = document.createElement("input");
+          nameInput.type = "text";
+          nameInput.value = currentText;
+          nameInput.className = "edit-name";
+
+          const dateInput = document.createElement("input");
+          dateInput.type = "date";
+          dateInput.className = "edit-date";
+          dateInput.value = currentDate ? reverseFormatDate(currentDate) : "";
+
+          taskContent.innerHTML = "";
+          taskContent.appendChild(nameInput);
+          taskContent.appendChild(dateInput);
+
+          editButton.textContent = "Salvar";
+        } else {
+          const name = li.querySelector("input.edit-name").value.trim();
+          const date = li.querySelector("input.edit-date").value;
+
+          if (!name) return;
+
+          taskContent.innerHTML = "";
+
+          const nameSpan = document.createElement("div");
+          nameSpan.textContent = name;
+          taskContent.appendChild(nameSpan);
+
+          if (date) {
+            const dateSpan = document.createElement("div");
+            dateSpan.classList.add("due-date");
+            dateSpan.textContent = `Prazo: ${formatDate(date)}`;
+            taskContent.appendChild(dateSpan);
+          }
+
+          editButton.textContent = "Editar";
+        }
+      };
 
       const delButton = document.createElement("button");
       delButton.textContent = "Remover";
       delButton.onclick = (e) => {
-        e.stopPropagation(); // Evita marcar como "done" ao remover
+        e.stopPropagation();
         li.remove();
       };
+
+      li.appendChild(editButton);
       li.appendChild(delButton);
 
       document.getElementById("task-list").appendChild(li);
