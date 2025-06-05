@@ -27,8 +27,9 @@
       display: flex;
       gap: 0.5rem;
       margin-bottom: 1rem;
+      flex-wrap: wrap;
     }
-    input[type="text"], input[type="date"] {
+    input[type="text"], input[type="date"], select {
       flex: 1;
       padding: 0.5rem;
     }
@@ -57,10 +58,22 @@
       flex: 1;
       margin-right: 0.5rem;
     }
-    .due-date {
+    .due-date, .priority {
       font-size: 0.85rem;
       color: #555;
       margin-top: 0.25rem;
+    }
+    .priority-alta {
+      color: red;
+      font-weight: bold;
+    }
+    .priority-media {
+      color: orange;
+      font-weight: bold;
+    }
+    .priority-baixa {
+      color: green;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -70,6 +83,11 @@
     <div class="input-group">
       <input id="new-task" type="text" placeholder="Nova tarefa..." />
       <input id="task-date" type="date" />
+      <select id="task-priority">
+        <option value="baixa">Baixa</option>
+        <option value="media">Média</option>
+        <option value="alta">Alta</option>
+      </select>
       <button onclick="addTask()">Adicionar</button>
     </div>
     <ul id="task-list"></ul>
@@ -89,8 +107,11 @@
     function addTask() {
       const input = document.getElementById("new-task");
       const dateInput = document.getElementById("task-date");
+      const priorityInput = document.getElementById("task-priority");
+      
       const taskText = input.value.trim();
       const dueDate = dateInput.value;
+      const priority = priorityInput.value;
 
       if (!taskText) return;
 
@@ -110,15 +131,31 @@
         taskContent.appendChild(dateSpan);
       }
 
+      if (priority) {
+        const prioritySpan = document.createElement("div");
+        prioritySpan.classList.add("priority");
+
+        if (priority === "alta") {
+          prioritySpan.classList.add("priority-alta");
+          prioritySpan.textContent = "Prioridade: Alta";
+        } else if (priority === "media") {
+          prioritySpan.classList.add("priority-media");
+          prioritySpan.textContent = "Prioridade: Média";
+        } else {
+          prioritySpan.classList.add("priority-baixa");
+          prioritySpan.textContent = "Prioridade: Baixa";
+        }
+
+        taskContent.appendChild(prioritySpan);
+      }
+
       li.appendChild(taskContent);
 
       li.addEventListener("click", (e) => {
-  
-  if (e.target.tagName !== "BUTTON" && e.target.tagName !== "INPUT") {
-    li.classList.toggle("done");
-  }
-});
-
+        if (e.target.tagName !== "BUTTON" && e.target.tagName !== "INPUT" && e.target.tagName !== "SELECT") {
+          li.classList.toggle("done");
+        }
+      });
 
       const editButton = document.createElement("button");
       editButton.textContent = "Editar";
@@ -131,6 +168,8 @@
           const currentText = taskContent.querySelector("div")?.textContent || "";
           const currentDateElem = taskContent.querySelector(".due-date");
           const currentDate = currentDateElem ? currentDateElem.textContent.split(": ")[1] : "";
+          const currentPriorityElem = taskContent.querySelector(".priority");
+          const currentPriority = currentPriorityElem ? currentPriorityElem.textContent.split(": ")[1].toLowerCase() : "baixa";
 
           const nameInput = document.createElement("input");
           nameInput.type = "text";
@@ -142,14 +181,26 @@
           dateInput.className = "edit-date";
           dateInput.value = currentDate ? reverseFormatDate(currentDate) : "";
 
+          const prioritySelect = document.createElement("select");
+          prioritySelect.className = "edit-priority";
+          ["baixa", "media", "alta"].forEach(p => {
+            const option = document.createElement("option");
+            option.value = p;
+            option.textContent = p.charAt(0).toUpperCase() + p.slice(1);
+            if (p === currentPriority) option.selected = true;
+            prioritySelect.appendChild(option);
+          });
+
           taskContent.innerHTML = "";
           taskContent.appendChild(nameInput);
           taskContent.appendChild(dateInput);
+          taskContent.appendChild(prioritySelect);
 
           editButton.textContent = "Salvar";
         } else {
           const name = li.querySelector("input.edit-name").value.trim();
           const date = li.querySelector("input.edit-date").value;
+          const priority = li.querySelector("select.edit-priority").value;
 
           if (!name) return;
 
@@ -164,6 +215,24 @@
             dateSpan.classList.add("due-date");
             dateSpan.textContent = `Prazo: ${formatDate(date)}`;
             taskContent.appendChild(dateSpan);
+          }
+
+          if (priority) {
+            const prioritySpan = document.createElement("div");
+            prioritySpan.classList.add("priority");
+
+            if (priority === "alta") {
+              prioritySpan.classList.add("priority-alta");
+              prioritySpan.textContent = "Prioridade: Alta";
+            } else if (priority === "media") {
+              prioritySpan.classList.add("priority-media");
+              prioritySpan.textContent = "Prioridade: Média";
+            } else {
+              prioritySpan.classList.add("priority-baixa");
+              prioritySpan.textContent = "Prioridade: Baixa";
+            }
+
+            taskContent.appendChild(prioritySpan);
           }
 
           editButton.textContent = "Editar";
@@ -183,6 +252,7 @@
       document.getElementById("task-list").appendChild(li);
       input.value = "";
       dateInput.value = "";
+      priorityInput.value = "baixa";
     }
   </script>
 </body>
