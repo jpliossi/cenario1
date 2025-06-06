@@ -5,3 +5,6 @@ Funcionalidade de login que permite que o usuário acesse o sistema com seguran�
 - **Email:** Obrigatório, formato válido (ex: usuario@email.com).
 - **Senha:** Obrigatória, mínimo de 6 caracteres.
 
+Integrando funcionalidades e resolvendo conflitos.
+Integrado funcionalidade de login com o banco de dados.
+Enviando para develop.
