@@ -8,3 +8,7 @@ Funcionalidade de login que permite que o usu√°rio acesse o sistema com seguran√
 Integrando funcionalidades e resolvendo conflitos.
 Integrado funcionalidade de login com o banco de dados.
 Enviando para develop.
+
+Realisando estabilizacao correcao de bugs leves 
+testes e ajustes finais 
+v1.0
