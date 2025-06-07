@@ -1,0 +1,17 @@
+name: Simulacao CI - GC
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Rodar testes simulados
+        run: echo "✅ Todos os testes passaram!"
