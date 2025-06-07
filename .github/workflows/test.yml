@@ -1,13 +1,17 @@
-name: CI - Simulação GC
+name: Simulacao CI - GC
 
 on:
   pull_request:
     branches: [main]
+  push:
+    branches: [main]
 
 jobs:
-  test.yml:  
+  build:
     runs-on: ubuntu-latest
     steps:
-      
-name: CI simulado
-      run: echo "✅ Teste simulado executado com sucesso"
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Rodar testes simulados
+        run: echo "✅ Todos os testes passaram!"
