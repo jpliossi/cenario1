@@ -1,4 +1,4 @@
-name: test.yml
+name: test.yml / build (pull_request)
 
 on:
   pull_request:
