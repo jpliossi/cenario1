@@ -14,3 +14,7 @@ testes e ajustes finais
 v1.0
 
 DETECTADO erro na hora do login, com urgencia arrumar, senhas com 5 caracter sendo aceita.
+
+v1.0.1
+
+Erros relacionados ao login solucionados e ajustados.
