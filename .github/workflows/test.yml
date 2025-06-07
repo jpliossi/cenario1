@@ -1,10 +1,10 @@
-name: Simulacao CI - GC
+name: test.yml
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main-cenario3]
   push:
-    branches: [main]
+    branches: [main-cenario3]
 
 jobs:
   build:
